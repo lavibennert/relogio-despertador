@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Despertador</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      text-align: center;
+      padding-top: 50px;
+      background-color: rgb(33, 99, 199);
+      color: white;
+    }
+
+    input, button {
+      font-size: 18px;
+      padding: 8px;
+      margin: 10px;
+    }
+
+    h1 {
+      font-size: 40px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Despertador ⏰</h1>
+  <p>Defina o horário do alarme:</p>
+  <input type="time" id="alarmTime">
+  <button onclick="setAlarm()">Ativar Alarme</button>
+  <button onclick="clearAlarm()">Cancelar</button>
+
+  <p id="status"></p>
+
+  <!-- Use um som válido que funcione direto no navegador -->
+  <audio id="alarmSound" src="https://pixabay.com/pt/sound-effects/morning-joy-alarm-clock-20961/" preload="auto"></audio>
+
+  <script>
+    let alarmTimeout = null;
+
+    function setAlarm() {
+      const input = document.getElementById("alarmTime").value;
+      if (!input) {
+        alert("Por favor, defina um horário!");
+        return;
+      }
+
+      const now = new Date();
+      const alarm = new Date();
+
+      const [hours, minutes] = input.split(':');
+      alarm.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+
+      if (alarm <= now) {
+        // Se o horário já passou hoje, define para amanhã
+        alarm.setDate(alarm.getDate() + 1);
+      }
+
+      const timeToAlarm = alarm - now;
+
+      document.getElementById('status').innerText = `Alarme definido para ${input}`;
+
+      alarmTimeout = setTimeout(() => {
+        document.getElementById('alarmSound').play();
+        alert('Hora de levantar! 🛌');
+      }, timeToAlarm);
+    }
+
+    function clearAlarm() {
+      clearTimeout(alarmTimeout);
+      document.getElementById('status').innerText = 'Alarme cancelado.';
+    }
+  </script>
+</body>
+</html>
